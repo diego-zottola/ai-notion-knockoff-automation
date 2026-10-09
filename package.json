@@ -1,0 +1,21 @@
+{
+  "name": "ai-driven-automation-framework",
+  "version": "1.0.0",
+  "description": "Reusable Playwright + MCP test automation template — extracted from the production Carwire QA framework (POM, fixtures, Allure, multi-env dotenv, MCP-driven exploration, ISTQB test design rules).",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint '.claude/skills/ai-driven-automation-framework/templates/**/*.js'",
+    "lint:fix": "eslint '.claude/skills/ai-driven-automation-framework/templates/**/*.js' --fix",
+    "format": "prettier --write '.claude/skills/ai-driven-automation-framework/templates/**/*.js'",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3"
+  }
+}

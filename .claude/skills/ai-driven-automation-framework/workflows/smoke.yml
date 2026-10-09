@@ -1,0 +1,80 @@
+name: Smoke Tests
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # 07:00 America/Argentina/Buenos_Aires (UTC-3, no DST)
+  workflow_dispatch:
+    inputs:
+      test_grep:
+        description: 'Leave blank = run ALL smoke tests | One test: TC0001 | Multiple: TC0001|TC0002 | By name: partial title match'
+        required: false
+        default: ''
+
+jobs:
+  smoke:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Start Playwright MCP server
+        run: |
+          mkdir -p .playwright-mcp
+          nohup npx @playwright/mcp@latest --port 3000 > .playwright-mcp/mcp-ci.log 2>&1 &
+          disown
+          sleep 2
+          echo "MCP server started with PID $!"
+        env:
+          PLAYWRIGHT_MCP_PORT: 3000
+      - name: Risk-based test selection
+        id: risk
+        run: |
+          node -e "
+            import('./templates/orchestrator/risk-selector.js').then(m => {
+              const result = m.buildGrepPattern();
+              m.reportSelection(result);
+            });
+          "
+      - id: smoke
+        continue-on-error: true
+        run: |
+          rm -rf allure-results
+          if [ -n "${{ github.event.inputs.test_grep }}" ]; then
+            npx playwright test --project=chromium tests/smoke-tests --grep "${{ github.event.inputs.test_grep }}"
+          else
+            npx playwright test --project=chromium tests/smoke-tests --grep "${{ env.PLAYWRIGHT_GREP || '.*' }}"
+          fi
+          npx allure generate allure-results --clean -o allure-report
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          ENV: ci
+          PLAYWRIGHT_MCP_PORT: 3000
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: smoke-playwright-report, path: playwright-report/, retention-days: 14 }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: smoke-allure-report, path: allure-report/, retention-days: 14 }
+      - name: Upload MCP logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-logs-${{ github.run_id }}
+          path: .playwright-mcp/*.log
+          if-no-files-found: ignore
+      # omit this step entirely (not just conditionally) if step 0 didn't provide a Slack webhook
+      - if: always()
+        run: bash scripts/notify-slack.sh
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_TYPE: Smoke Tests
+          RESULTS_DIR: playwright-report
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - if: steps.smoke.outcome == 'failure'
+        run: exit 1
