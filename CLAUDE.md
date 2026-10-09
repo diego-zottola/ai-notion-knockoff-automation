@@ -29,3 +29,22 @@ framework improvement, not a Carwire-specific one-off.
 
 Code, comments, identifiers, file names, and all project artifacts are in English — see the global
 `~/.claude/CLAUDE.md` rule. Conversational replies may be in the user's language.
+
+## App under test: Workspace (Notion-like)
+
+- URL and credentials: `.env` (`BASE_URL`, `TEST_USER_USERNAME`, `TEST_USER_PASSWORD`). Never print or commit them.
+- Context lives in the repo; read it before exploring or generating, and append new findings after each run:
+  - [docs/app-map.md](docs/app-map.md): screens, routes, flows.
+  - [docs/business-rules.md](docs/business-rules.md): rules of the application under test.
+  - [docs/technical-context.md](docs/technical-context.md): login, data, cleanup, pitfalls.
+  - [docs/framework-flow.md](docs/framework-flow.md): rules of the framework's onboarding flow.
+
+### Test inventory
+
+Last TC: TC0027 (27 tests total)
+- `tests/smoke-tests/auth.spec.js`: TC0001-TC0004 (login screen, invalid and valid login, route protection)
+- `tests/smoke-tests/navigation.spec.js`: TC0005-TC0010 (shell and sidebar sections)
+- `tests/smoke-tests/pages.spec.js`: TC0011 (create page, persists after reload)
+- `tests/regression/pages.spec.js`: TC0012-TC0018 (blocks, search, subpages, archive, restore, delete forever)
+- `tests/regression/settings.spec.js`: TC0019-TC0026 (members, groups, preferences, profile, switcher)
+- `tests/regression/session.spec.js`: TC0027 (logout)

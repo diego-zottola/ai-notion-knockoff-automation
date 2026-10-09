@@ -1,55 +1,39 @@
-# Business rules — guided onboarding flow
+# Business rules — application under test (Workspace)
 
-This document fixes the rules of the framework before implementation. This repository
-(`ai-driven-automation-framework-template`) is the parent of every QA project in the company.
-Existing skills and modules (analyst, data-agent, memory, orchestrator, visual, connectors)
-are reused and extended, not replaced.
+Rules learned during exploration, with the evidence that supports them. Append new findings after each run.
+The framework's own rules live in [framework-flow.md](framework-flow.md). Never put secrets or real customer data here.
 
-## Flow
+## Access and roles
 
-1. Create the project with "Use this template" on GitHub.
-2. Clone it locally and run `npm install`.
-3. Run `npm run init`. It asks for the application URL.
-4. Claude takes a first look at the app and detects the login type
-   (username/password, Google, none) and whether Vercel Deployment Protection is on.
-5. `init` asks for the credentials that match the detected login type.
-   It then asks whether to enable the Jira and Slack integrations (default: no).
-6. Claude runs the full exploration, proposes the test cases, generates the tests,
-   runs them and creates the CI workflow, without stopping in between.
-7. At the end it shows a summary (app map, test cases, first report, CI status).
+- BR-01 Login is required for every route; a logged-out visit to `/settings` or `/profile` shows the login form. (TC0004, TC0027)
+- BR-02 Invalid credentials keep the user on the login screen. (TC0002)
+- BR-03 Valid credentials land in a workspace where the user is "Propietario". (TC0003, TC0021)
+- BR-04 A user can belong to several workspaces and switch between them from the sidebar. (TC0025, TC0026)
+- BR-05 Member roles offered on invitation: Administrador, Miembro (default), Invitado. (TC0020)
+- BR-06 Share permissions: Puede ver (default), Puede editar, Acceso total. Access is inherited by subpages and the highest permission always wins. (stated by the app in the Share dialog, not yet tested)
+- BR-07 If a shared email has no account yet it becomes a pending invitation, activated when that person signs in with Google; if they are not a member of the space they join as guest. (stated by the app, not yet tested)
 
-## Rules
+## Pages
 
-- **No prior context:** the framework starts with no knowledge of the business of the application
-  under test. It receives only the URL and credentials, runs an exploratory pass, and derives the
-  app map and the first test cases from it. That context lives in the generated project, never in
-  this parent template.
-- **Shared, evolving context:** the generated project keeps its context inside the repo, versioned
-  in git, so anyone who clones it can use it with Claude Code without any local memory:
-  - `docs/app-map.md`: screens, routes and flows.
-  - `docs/business-rules.md`: business rules of the application under test, learned during exploration.
-  - `docs/technical-context.md`: how the app is tested (login, data, cleanup, known pitfalls).
-  - The project `CLAUDE.md` points to these files; the `app-pack` is the structured format.
-  Every user can add a learning, technical or business, to these files (by hand or by asking
-  Claude), commit it, and the whole team reuses it. Claude reads them before exploring or
-  generating and appends new findings after each run. Learnings must never include secrets or
-  real customer data, since the generated repo may be public.
-- **Credentials:** provided by the framework user. The framework asks for them, stores them
-  in `.env` and in the repository secrets (never through chat), and validates them by trying
-  to log in. It shows a fixed notice: use an account dedicated to QA.
-- **Environment:** the framework does not restrict where tests run, including production.
-  That decision belongs to the company.
-- **Approvals:** none in the middle of the flow. Claude explores, proposes and generates
-  everything on its own and presents a summary at the end.
-- **Healer:** may only heal selectors. It never changes assertions.
-- **Claude access:** `init` drives Claude Code in non-interactive mode (`claude -p`) using
-  the user's existing session, so no API key is needed for onboarding.
+- BR-08 A new page is created as "Sin título" and appears in the sidebar and in "Recientes". (TC0011)
+- BR-09 Title and block edits autosave (debounced); content survives a reload. (TC0011, TC0012)
+- BR-10 Pages can be nested; a parent with children shows an expand/collapse control. (TC0015)
+- BR-11 Markdown-like shortcuts format blocks (`# ` becomes Título 1). (TC0012)
+- BR-12 Search matches by page title (and, per the app, by content); no match shows no results. (TC0013, TC0014)
 
-- **Jira and Slack (optional):** `init` asks whether to enable them; the default is no.
-  If yes, it asks for the Jira URL and token and the Slack webhook, stores them in `.env`
-  and in the repository secrets, and enables the existing connectors module (`ticket-loop`).
-  If no, the flow is unchanged.
+## Archive and trash
 
-## Out of scope for now
+- BR-13 Archiving always asks for confirmation; cancelling keeps the page. (TC0016)
+- BR-14 Archiving a page also archives all its subpages; only the owner can delete them forever. (stated by the app; TC0017 covers the single page case)
+- BR-15 Archived pages leave the tree and show up in Papelera with who and when archived them. (TC0017)
+- BR-16 Restore returns the page to the tree. (TC0017)
+- BR-17 "Eliminar definitivamente" asks for confirmation, is irreversible and removes the page from search. (TC0018)
 
-- Automatic updates of projects created from this template.
+## Forms and validation
+
+- BR-18 Primary action buttons are disabled until the form is valid: invite member (empty email), create group (empty name), save profile name (unchanged name). (TC0019, TC0022, TC0024)
+
+## Data hygiene (testing rules that follow from the above)
+
+- BR-19 Tests only create pages whose title starts with `qa-auto-`, and always purge them (archive + delete forever) in fixture teardown.
+- BR-20 The QA account owns other spaces; tests only operate in the default workspace opened after login.

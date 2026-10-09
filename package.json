@@ -1,21 +1,33 @@
 {
-  "name": "ai-driven-automation-framework",
+  "name": "ai-notion-knockoff-automation",
   "version": "1.0.0",
-  "description": "Reusable Playwright + MCP test automation template — extracted from the production Carwire QA framework (POM, fixtures, Allure, multi-env dotenv, MCP-driven exploration, ISTQB test design rules).",
+  "description": "Playwright E2E automation for the Notion-like Workspace app (POM, fixtures, Allure, multi-env dotenv).",
   "private": true,
   "type": "module",
   "scripts": {
     "lint": "eslint '.claude/skills/ai-driven-automation-framework/templates/**/*.js'",
     "lint:fix": "eslint '.claude/skills/ai-driven-automation-framework/templates/**/*.js' --fix",
     "format": "prettier --write '.claude/skills/ai-driven-automation-framework/templates/**/*.js'",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "init": "node scripts/init.mjs",
+    "setup": "npm install && npx playwright install --with-deps",
+    "test": "rm -rf allure-results && npx playwright test --project=chromium && npm run allure",
+    "test:smoke": "rm -rf allure-results && npx playwright test --project=chromium tests/smoke-tests && npx allure generate allure-results --clean -o allure-report",
+    "test:regression": "rm -rf allure-results && npx playwright test --project=chromium tests/regression && npx allure generate allure-results --clean -o allure-report",
+    "allure": "npx allure generate allure-results --clean -o allure-report && npx allure open allure-report --port 3030"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "allure-commandline": "^2.46.1",
+    "allure-playwright": "^3.13.0",
+    "dotenv": "^18.0.7",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.2",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.49.0"
   }
 }
