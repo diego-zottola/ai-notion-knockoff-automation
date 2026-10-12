@@ -38,4 +38,4 @@ expand/collapse button when it has children), then Papelera, Miembros, Grupos, P
 
 ## Coverage
 
-See the test inventory in `CLAUDE.md`. Not covered yet (backlog): sharing and member invitations (they create real invitations, so they need a data-cleanup strategy), page move, reordering (Subir/Bajar), image upload, workspace creation, theme/compact persistence, Google login.
+See the test inventory in `CLAUDE.md`. Editor, paste, images and attachments: TC0028-TC0088 (see docs/editor-clipboard-report.md). Not covered yet (backlog): read-only access for a viewer (needs a VIEWER identity), sharing and member invitations (they create real invitations, so they need a data-cleanup strategy), page move, reordering (Subir/Bajar), image upload, workspace creation, theme/compact persistence, Google login.

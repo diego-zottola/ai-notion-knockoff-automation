@@ -1,0 +1,57 @@
+◇ injected env (0) from .env.local
+◇ injected env (4) from .env
+◇ injected env (0) from .env.local
+◇ injected env (0) from .env
+
+Running 1 test using 1 worker
+
+◇ injected env (0) from .env.local
+
+◇ injected env (0) from .env
+
+[1/1] [chromium] › tests/regression/editor-paste.spec.js:114:3 › Editor paste - position and selection › TC0039 - a single-line fragment pasted over a word stays inside the same paragraph
+  1) [chromium] › tests/regression/editor-paste.spec.js:114:3 › Editor paste - position and selection › TC0039 - a single-line fragment pasted over a word stays inside the same paragraph 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+      Array [
+    -   "One NEW three",
+    +   "One",
+    +   "NEW",
+    +   "three",
+        "Final QA",
+      ]
+
+      117 |     await editor.selectRange('One REPLACE three', 4, 11);
+      118 |     await editor.pasteSynthetic({ html: '<span>NEW</span>', text: 'NEW' });
+    > 119 |     expect(await editor.visibleTexts()).toEqual(['One NEW three', 'Final QA']);
+          |                                         ^
+      120 |   });
+      121 |
+      122 |   test('TC0040 - pasting over a selection spanning several blocks removes it and keeps the rest', async ({ createdPage, editor }) => {
+        at /Users/diegozottola/AZUMO/automationtemplattest/ai-notion-knockoff-automation/tests/regression/editor-paste.spec.js:119:41
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-02/regression-editor-paste-Ed-1c1b2-s-inside-the-same-paragraph-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-02/regression-editor-paste-Ed-1c1b2-s-inside-the-same-paragraph-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: docs/defects/evidence/DEF-02/regression-editor-paste-Ed-1c1b2-s-inside-the-same-paragraph-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-02/regression-editor-paste-Ed-1c1b2-s-inside-the-same-paragraph-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace docs/defects/evidence/DEF-02/regression-editor-paste-Ed-1c1b2-s-inside-the-same-paragraph-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › tests/regression/editor-paste.spec.js:114:3 › Editor paste - position and selection › TC0039 - a single-line fragment pasted over a word stays inside the same paragraph 

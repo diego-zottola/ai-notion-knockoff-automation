@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual copy reference page (QA)</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 1rem; }
+  .meta { color: #555; } .sample { border: 1px solid #bbb; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+  table { border-collapse: collapse; } td, th { border: 1px solid #999; padding: .25rem .5rem; }
+  img { vertical-align: middle; } pre { background: #f4f4f4; padding: .5rem; overflow-x: auto; }
+  .steps { background: #eef6ff; border-radius: 6px; padding: 1rem; }
+</style></head>
+<body>
+<h1>Manual copy reference page</h1>
+<div class="steps">
+  <p><strong>How to use it.</strong> 1) Select the content of <em>#copy-source</em> (or use the "Select all" button).
+  2) Copy with Cmd/Ctrl+C. 3) Paste with Cmd/Ctrl+V into a test page of the editor. 4) Compare against the list below.</p>
+  <button type="button" id="select-all">Select all</button>
+  <p>Expected after pasting: H1-H3 headings, bold, italic, strike, colours, safe link, quote, numbered list, indented bullets,
+  table with header and empty cells, code, rendered Mermaid diagram, and Text &rarr; image &rarr; Text in that order.
+  All content is synthetic; it contains no real data.</p>
+</div>
+<div id="copy-source">
+<section id="rich"><h2 class="meta">Formatted text</h2><div class="sample" data-sample="rich"><h1>Title one QA</h1>
+<p>Paragraph with <strong>bold</strong>, <em>italic</em>, <s>strike</s> and <a href="https://example.com/doc">a safe link</a>.</p>
+<h2>Title two QA</h2>
+<p>Text with <span style="color: #cc0000">red colour</span> and <span style="color: #0000cc">blue colour</span>.</p>
+<h3>Title three QA</h3>
+<blockquote>Test quote QA</blockquote>
+<ol><li>First numbered</li><li>Second numbered</li></ol>
+<ul><li>Bullet one<ul><li>Bullet child<ul><li>Bullet grandchild</li></ul></li></ul></li><li>Bullet two</li></ul>
+<p>Document closing QA</p></div></section>
+<section id="tables"><h2 class="meta">Tables</h2><div class="sample" data-sample="tables"><table><thead><tr><th>Key</th><th>Value</th><th>Note</th></tr></thead><tbody>
+<tr><td>One</td><td><strong>Two</strong><br>Three</td><td></td></tr>
+<tr><td></td><td><em>Italic cell</em></td><td><a href="https://example.com/celda">Link cell</a></td></tr>
+<tr><td>End</td><td></td><td>Last</td></tr></tbody></table>
+<p>Text after the table QA</p></div></section>
+<section id="code"><h2 class="meta">Code and Mermaid</h2><div class="sample" data-sample="code"><p>Before the code QA</p>
+<pre><code class="language-javascript">const total = [1, 2, 3].reduce((a, b) => a + b, 0);
+console.log(total);</code></pre>
+<pre><code class="language-mermaid">flowchart LR
+  A[Start] --> B[Process]
+  B --> C[End]</code></pre>
+<p>After the diagram QA</p></div></section>
+<section id="images"><h2 class="meta">Text and images</h2><div class="sample" data-sample="images"><p>Text before the image QA</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAQCAIAAACDRijCAAAAGklEQVR4nGM4oaFBFcQwatCoQaMGjRpEGQIATMGkEDHeO18AAAAASUVORK5CYII=" alt="red.png"></p>
+<p>Text between images QA</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAQCAIAAACDRijCAAAAGklEQVR4nGPQWOBGFcQwatCoQaMGjRpEGQIA9aWVEFT6qlkAAAAASUVORK5CYII=" alt="green.png"></p>
+<p>Text after the images QA</p></div></section>
+</div>
+<script>document.getElementById('select-all').addEventListener('click', () => {
+  const range = document.createRange(); range.selectNodeContents(document.getElementById('copy-source'));
+  const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
+});</script>
+</body></html>

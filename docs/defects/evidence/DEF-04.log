@@ -1,0 +1,56 @@
+◇ injected env (0) from .env.local
+◇ injected env (4) from .env
+◇ injected env (0) from .env.local
+◇ injected env (0) from .env
+
+Running 1 test using 1 worker
+
+◇ injected env (0) from .env.local
+
+◇ injected env (0) from .env
+
+[1/1] [chromium] › tests/regression/editor-files.spec.js:137:3 › Editor images - upload failures, undo and limits › TC0067 - undo AFTER the in-flight upload finished while the image was deleted still restores a usable image
+  1) [chromium] › tests/regression/editor-files.spec.js:137:3 › Editor images - upload failures, undo and limits › TC0067 - undo AFTER the in-flight upload finished while the image was deleted still restores a usable image 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-editor="rich"] .ProseMirror').getByRole('img')
+    Expected: visible
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-editor="rich"] .ProseMirror').getByRole('img') with timeout 20000ms
+      - waiting for locator('[data-editor="rich"] .ProseMirror').getByRole('img')
+
+
+      157 |     await expect(image.or(failed)).toBeVisible({ timeout: 20_000 });
+      158 |     if (await failed.isVisible()) await failed.getByRole('button', { name: 'Reintentar' }).click();
+    > 159 |     await expect(image).toBeVisible({ timeout: 20_000 });
+          |                         ^
+      160 |     await editor.expectSaved();
+      161 |     await editor.reloadAndWait();
+      162 |     await expect.poll(() => editor.imagesLoaded()).toEqual([true]);
+        at /Users/diegozottola/AZUMO/automationtemplattest/ai-notion-knockoff-automation/tests/regression/editor-files.spec.js:159:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-04/regression-editor-files-Ed-2ebce-ill-restores-a-usable-image-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-04/regression-editor-files-Ed-2ebce-ill-restores-a-usable-image-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: docs/defects/evidence/DEF-04/regression-editor-files-Ed-2ebce-ill-restores-a-usable-image-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-04/regression-editor-files-Ed-2ebce-ill-restores-a-usable-image-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace docs/defects/evidence/DEF-04/regression-editor-files-Ed-2ebce-ill-restores-a-usable-image-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › tests/regression/editor-files.spec.js:137:3 › Editor images - upload failures, undo and limits › TC0067 - undo AFTER the in-flight upload finished while the image was deleted still restores a usable image 

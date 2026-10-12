@@ -3,6 +3,7 @@ import { PROFILES, useEnvironment } from '../auth/environment-profile.js';
 import { LoginPage } from '../pages/LoginPage.js';
 import { WorkspacePage } from '../pages/WorkspacePage.js';
 import { DocPage } from '../pages/DocPage.js';
+import { EditorPage } from '../pages/EditorPage.js';
 import { TrashPage } from '../pages/TrashPage.js';
 import { MembersPage, GroupsPage, PreferencesPage, ProfilePage } from '../pages/SettingsPages.js';
 
@@ -13,6 +14,7 @@ export const test = base.extend({
   loginPage: async ({ page }, use) => use(new LoginPage(page)),
   workspace: async ({ page }, use) => use(new WorkspacePage(page)),
   docPage: async ({ page }, use) => use(new DocPage(page)),
+  editor: async ({ page }, use) => use(new EditorPage(page)),
   trashPage: async ({ page }, use) => use(new TrashPage(page)),
   membersPage: async ({ page }, use) => use(new MembersPage(page)),
   groupsPage: async ({ page }, use) => use(new GroupsPage(page)),

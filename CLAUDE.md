@@ -41,10 +41,17 @@ Code, comments, identifiers, file names, and all project artifacts are in Englis
 
 ### Test inventory
 
-Last TC: TC0027 (27 tests total)
+Last TC: TC0088 (88 tests total)
 - `tests/smoke-tests/auth.spec.js`: TC0001-TC0004 (login screen, invalid and valid login, route protection)
 - `tests/smoke-tests/navigation.spec.js`: TC0005-TC0010 (shell and sidebar sections)
 - `tests/smoke-tests/pages.spec.js`: TC0011 (create page, persists after reload)
 - `tests/regression/pages.spec.js`: TC0012-TC0018 (blocks, search, subpages, archive, restore, delete forever)
 - `tests/regression/settings.spec.js`: TC0019-TC0026 (members, groups, preferences, profile, switcher)
 - `tests/regression/session.spec.js`: TC0027 (logout)
+- `tests/regression/editor-paste.spec.js`: TC0028-TC0057 (synthetic paste: HTML/text, Markdown, position and selection, tables, code and Mermaid, unsafe content, toolbar, undo)
+- `tests/regression/editor-files.spec.js`: TC0058-TC0075 (pasted and uploaded images, upload failures, attachments)
+- `tests/regression/editor-persistence.spec.js`: TC0076-TC0084 (reload, 90 blocks, icon, save failures; TC0084 viewer is skipped: missing role)
+- `tests/regression/editor-native.spec.js`: TC0085-TC0086 (native keyboard copy/paste and async Clipboard API; skipped when the OS clipboard is unusable)
+- `tests/regression/editor-mobile.spec.js`: TC0087-TC0088 (emulated phone)
+- Known-defect tests (kept failing on purpose, annotated `defect`): TC0033 DEF-01, TC0039 DEF-02, TC0047 DEF-03, TC0067 DEF-04. Report: [docs/editor-clipboard-report.md](docs/editor-clipboard-report.md)
+- Editor page object: `pages/EditorPage.js` (extends `DocPage`); fixtures in `data/clipboard/` (regenerate with `node data/clipboard/build-fixtures.mjs`), loaders in `utils/clipboard.js`

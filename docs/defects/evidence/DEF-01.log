@@ -1,0 +1,56 @@
+◇ injected env (0) from .env.local
+◇ injected env (4) from .env
+◇ injected env (0) from .env.local
+◇ injected env (0) from .env
+
+Running 1 test using 1 worker
+
+◇ injected env (0) from .env.local
+
+◇ injected env (0) from .env
+
+[1/1] [chromium] › tests/regression/editor-paste.spec.js:65:3 › Editor paste - plain-text Markdown › TC0033 - a ```mermaid fence in pasted Markdown text becomes a rendered diagram
+  1) [chromium] › tests/regression/editor-paste.spec.js:65:3 › Editor paste - plain-text Markdown › TC0033 - a ```mermaid fence in pasted Markdown text becomes a rendered diagram 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-editor="rich"] .ProseMirror').locator('[data-content-type="wsDiagram"]').locator('[role="img"] svg')
+    Expected: visible
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-editor="rich"] .ProseMirror').locator('[data-content-type="wsDiagram"]').locator('[role="img"] svg') with timeout 20000ms
+      - waiting for locator('[data-editor="rich"] .ProseMirror').locator('[data-content-type="wsDiagram"]').locator('[role="img"] svg')
+
+
+      67 |     await editor.start();
+      68 |     await editor.pasteSynthetic({ text: fixtureText('code-mermaid.md') });
+    > 69 |     await expect(editor.diagram.locator('[role="img"] svg')).toBeVisible({ timeout: 20_000 });
+         |                                                              ^
+      70 |   });
+      71 |
+      72 |   test('TC0034 - ordinary text that only resembles Markdown stays ordinary text', async ({ createdPage, editor }) => {
+        at /Users/diegozottola/AZUMO/automationtemplattest/ai-notion-knockoff-automation/tests/regression/editor-paste.spec.js:69:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-01/regression-editor-paste-Ed-40305--becomes-a-rendered-diagram-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-01/regression-editor-paste-Ed-40305--becomes-a-rendered-diagram-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: docs/defects/evidence/DEF-01/regression-editor-paste-Ed-40305--becomes-a-rendered-diagram-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-01/regression-editor-paste-Ed-40305--becomes-a-rendered-diagram-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace docs/defects/evidence/DEF-01/regression-editor-paste-Ed-40305--becomes-a-rendered-diagram-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › tests/regression/editor-paste.spec.js:65:3 › Editor paste - plain-text Markdown › TC0033 - a ```mermaid fence in pasted Markdown text becomes a rendered diagram 

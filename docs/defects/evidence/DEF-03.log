@@ -1,0 +1,55 @@
+◇ injected env (0) from .env.local
+◇ injected env (4) from .env
+◇ injected env (0) from .env.local
+◇ injected env (0) from .env
+
+Running 1 test using 1 worker
+
+◇ injected env (0) from .env.local
+
+◇ injected env (0) from .env
+
+[1/1] [chromium] › tests/regression/editor-paste.spec.js:185:3 › Editor paste - tables and nested lists › TC0047 - consecutive table operations apply to the CURRENT table, not to a stale one
+  1) [chromium] › tests/regression/editor-paste.spec.js:185:3 › Editor paste - tables and nested lists › TC0047 - consecutive table operations apply to the CURRENT table, not to a stale one 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "cols": 2,
+    -   "rows": 6,
+    +   "rows": 5,
+      }
+
+      192 |     expect(await editor.tableSize()).toEqual({ rows: 6, cols: 3 });
+      193 |     await editor.button('Quitar última columna').click();
+    > 194 |     expect(await editor.tableSize()).toEqual({ rows: 6, cols: 2 });
+          |                                      ^
+      195 |   });
+      196 |
+      197 |   test('TC0048 - after pasting an indented list you keep editing with formatting, no Markdown shown', async ({ createdPage, editor, page }) => {
+        at /Users/diegozottola/AZUMO/automationtemplattest/ai-notion-knockoff-automation/tests/regression/editor-paste.spec.js:194:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-03/regression-editor-paste-Ed-9c98b-NT-table-not-to-a-stale-one-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-03/regression-editor-paste-Ed-9c98b-NT-table-not-to-a-stale-one-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: docs/defects/evidence/DEF-03/regression-editor-paste-Ed-9c98b-NT-table-not-to-a-stale-one-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    docs/defects/evidence/DEF-03/regression-editor-paste-Ed-9c98b-NT-table-not-to-a-stale-one-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace docs/defects/evidence/DEF-03/regression-editor-paste-Ed-9c98b-NT-table-not-to-a-stale-one-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › tests/regression/editor-paste.spec.js:185:3 › Editor paste - tables and nested lists › TC0047 - consecutive table operations apply to the CURRENT table, not to a stale one 
