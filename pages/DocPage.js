@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
 
 // Editor page (/w/:ws/p/:id)
@@ -15,6 +16,12 @@ export class DocPage extends BasePage {
   }
 
   async setTitle(text) {
+    // A new page sometimes opens with a readonly title that never becomes editable (permissions race); reloading recovers it.
+    try {
+      await expect(this.title).toBeEditable({ timeout: 8_000 });
+    } catch {
+      await this.page.reload();
+    }
     await this.title.fill(text);
     // Title autosaves; wait for it to show in the sidebar tree before moving on.
     await this.page.getByRole('navigation', { name: 'Páginas' }).getByRole('link', { name: text, exact: true }).waitFor();

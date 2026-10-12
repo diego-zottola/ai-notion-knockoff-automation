@@ -41,7 +41,7 @@ Code, comments, identifiers, file names, and all project artifacts are in Englis
 
 ### Test inventory
 
-Last TC: TC0088 (88 tests total)
+Last TC: TC0103 (103 tests total)
 - `tests/smoke-tests/auth.spec.js`: TC0001-TC0004 (login screen, invalid and valid login, route protection)
 - `tests/smoke-tests/navigation.spec.js`: TC0005-TC0010 (shell and sidebar sections)
 - `tests/smoke-tests/pages.spec.js`: TC0011 (create page, persists after reload)
@@ -53,5 +53,6 @@ Last TC: TC0088 (88 tests total)
 - `tests/regression/editor-persistence.spec.js`: TC0076-TC0084 (reload, 90 blocks, icon, save failures; TC0084 viewer is skipped: missing role)
 - `tests/regression/editor-native.spec.js`: TC0085-TC0086 (native keyboard copy/paste and async Clipboard API; skipped when the OS clipboard is unusable)
 - `tests/regression/editor-mobile.spec.js`: TC0087-TC0088 (emulated phone)
+- `tests/regression/editor-comments.spec.js`: TC0089-TC0103 (block comments; cases and priorities in [docs/test-cases-comments.md](docs/test-cases-comments.md), only High and Medium automated)
 - Known-defect tests (kept failing on purpose, annotated `defect`): TC0033 DEF-01, TC0039 DEF-02, TC0047 DEF-03, TC0067 DEF-04. Report: [docs/editor-clipboard-report.md](docs/editor-clipboard-report.md)
-- Editor page object: `pages/EditorPage.js` (extends `DocPage`); fixtures in `data/clipboard/` (regenerate with `node data/clipboard/build-fixtures.mjs`), loaders in `utils/clipboard.js`
+- Editor page object: `pages/EditorPage.js` (extends `DocPage`); comments: `pages/CommentsPage.js`; fixtures in `data/clipboard/` (regenerate with `node data/clipboard/build-fixtures.mjs`), loaders in `utils/clipboard.js`
