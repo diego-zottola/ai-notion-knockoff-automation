@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/base.fixture.js';
+import { test, expect, VIEWER } from '../../fixtures/base.fixture.js';
 import { clipboardOf, largeExpected } from '../../utils/clipboard.js';
 
 // Save, reload and recovery. Save failures are simulated with client-side routes on the blocks endpoint, so the deployed
@@ -103,9 +103,27 @@ test.describe('Editor save failures and recovery', () => {
 });
 
 test.describe('Editor read-only access', () => {
-  // Needs a second identity with view-only access to a page, which means sharing a page with another account. Sharing is
-  // out of scope for this suite (it creates real invitations), so the case is reported as skipped, never as passed.
-  test('TC0084 - a viewer sees no write controls and cannot change the page by keyboard or paste', async () => {
-    test.skip(true, 'Missing role: a VIEWER identity (view-only access to a page). Not verified in this project.');
+  // Uses the QA viewer account: the owner shares its own qa-auto- page as "Puede ver" (see permissions.spec.js).
+  test('TC0084 - a viewer sees no write controls and cannot change the page by keyboard or paste', async ({ createdPage, editor, docPage, viewerPage, page }) => {
+    await editor.start();
+    await page.keyboard.type('Read only QA');
+    await editor.expectSaved();
+    await docPage.shareWithUser(VIEWER.email, VIEWER.name);
+    await viewerPage.goto(createdPage.url);
+    await expect(viewerPage.getByText('Read only QA')).toBeVisible();
+    await viewerPage.getByText('Read only QA').click();
+    await viewerPage.keyboard.type('HACKED');
+    await viewerPage.evaluate(() => {
+      const target = document.querySelector('[data-editor="rich"] .ProseMirror');
+      const clipboardData = new DataTransfer();
+      clipboardData.setData('text/plain', 'PASTED');
+      target?.dispatchEvent(new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }));
+    });
+    await expect(viewerPage.getByText('Read only QA')).toBeVisible();
+    await expect(viewerPage.getByText('HACKED')).toHaveCount(0);
+    await expect(viewerPage.getByText('PASTED')).toHaveCount(0);
+    // The owner's copy is untouched.
+    await editor.reloadAndWait();
+    expect(await editor.visibleTexts()).toEqual(['Read only QA']);
   });
 });

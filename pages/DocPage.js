@@ -27,6 +27,32 @@ export class DocPage extends BasePage {
     await this.page.getByRole('navigation', { name: 'Páginas' }).getByRole('link', { name: text, exact: true }).waitFor();
   }
 
+  /** Share dialog (UC-SHARE-001): shares the page with a registered user and waits for the grant row. */
+  get shareDialog() { return this.page.getByRole('dialog').filter({ has: this.page.getByPlaceholder('Email de la persona a invitar') }); }
+  grantRow(name) { return this.shareDialog.getByRole('listitem').filter({ hasText: name }); }
+
+  async shareWithUser(email, name, permission = 'Puede ver') {
+    if (!(await this.shareDialog.isVisible())) await this.share.click();
+    await this.page.getByPlaceholder('Email de la persona a invitar').fill(email);
+    await this.shareDialog.getByLabel('Permiso para el email').selectOption({ label: permission });
+    await this.shareDialog.getByRole('button', { name: 'Compartir', exact: true }).click();
+    await expect(this.grantRow(name)).toBeVisible();
+  }
+
+  async changeGrant(name, permission) {
+    await this.grantRow(name).getByLabel(`Permiso de ${name}`).selectOption({ label: permission });
+  }
+
+  async revokeGrant(name) {
+    await this.grantRow(name).getByRole('button', { name: `Quitar acceso de ${name}` }).click();
+    await expect(this.grantRow(name)).toHaveCount(0);
+  }
+
+  async closeShare() {
+    await this.shareDialog.getByRole('button', { name: 'Close' }).click();
+    await expect(this.shareDialog).toBeHidden();
+  }
+
   async archiveConfirmed() {
     await this.archive.click();
     await this.confirmDialog.getByRole('button', { name: 'Archivar' }).click();

@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage.js';
 
 export class MembersPage extends BasePage {
@@ -18,6 +19,40 @@ export class GroupsPage extends BasePage {
     this.heading = page.getByRole('heading', { name: 'Grupos', level: 1 });
     this.name = page.getByRole('textbox', { name: 'Nombre del grupo' });
     this.createButton = page.getByRole('button', { name: 'Crear', exact: true });
+  }
+
+  groupHeading(name) { return this.page.getByRole('heading', { name, level: 2, exact: true }); }
+
+  async create(name) {
+    await this.name.fill(name);
+    await this.createButton.click();
+    await expect(this.groupHeading(name)).toBeVisible();
+  }
+
+  /** Adds a person to the group from the card's "Agregar miembro a <group>" picker. */
+  async addMember(group, person) {
+    const picker = this.page.getByLabel(`Agregar miembro a ${group}`);
+    await picker.selectOption({ label: person });
+    await picker.locator('xpath=ancestor::*[.//button[normalize-space()="Agregar"]][1]').getByRole('button', { name: 'Agregar', exact: true }).click();
+    await expect(this.page.getByRole('button', { name: `Quitar a ${person} de ${group}` })).toBeVisible();
+  }
+
+  async removeMember(group, person) {
+    await this.page.getByRole('button', { name: `Quitar a ${person} de ${group}` }).click();
+    await expect(this.page.getByRole('button', { name: `Quitar a ${person} de ${group}` })).toHaveCount(0);
+  }
+
+  async rename(group, next) {
+    await this.page.getByRole('button', { name: `Renombrar grupo ${group}` }).click();
+    await this.page.getByLabel('Nuevo nombre').fill(next);
+    await this.page.getByRole('button', { name: 'Guardar', exact: true }).click();
+    await expect(this.groupHeading(next)).toBeVisible();
+  }
+
+  async remove(group) {
+    await this.page.getByRole('button', { name: `Eliminar grupo ${group}` }).click();
+    await this.page.getByRole('alertdialog').getByRole('button', { name: 'Eliminar', exact: true }).click();
+    await expect(this.groupHeading(group)).toHaveCount(0);
   }
 }
 

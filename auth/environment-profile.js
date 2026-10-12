@@ -6,6 +6,13 @@ export const PROFILES = {
     credentialsEnvPrefix: 'TEST_USER',
     storageStatePath: 'auth/default.storageState.json',
   },
+  // Second identity for permission tests (VIEWER on shared pages). Credentials: VIEWER_USER_USERNAME / VIEWER_USER_PASSWORD.
+  viewer: {
+    name: 'viewer',
+    baseUrl: process.env.BASE_URL,
+    credentialsEnvPrefix: 'VIEWER_USER',
+    storageStatePath: 'auth/viewer.storageState.json',
+  },
 };
 
 export function useEnvironment(profileName) {

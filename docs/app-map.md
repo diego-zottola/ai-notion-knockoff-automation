@@ -38,4 +38,4 @@ expand/collapse button when it has children), then Papelera, Miembros, Grupos, P
 
 ## Coverage
 
-See the test inventory in `CLAUDE.md`. Editor, paste, images and attachments: TC0028-TC0088 (see docs/editor-clipboard-report.md). Not covered yet (backlog): read-only access for a viewer (needs a VIEWER identity), sharing and member invitations (they create real invitations, so they need a data-cleanup strategy), page move, reordering (Subir/Bajar), image upload, workspace creation, theme/compact persistence, Google login.
+See the test inventory in `CLAUDE.md`. Editor, paste, images and attachments: TC0028-TC0088 (see docs/editor-clipboard-report.md). Second pass (TC0104-TC0160): move, reorder, search, block types, preferences, classic editor, sharing, viewer access, groups, live collaboration; see docs/test-cases-coverage-gaps.md. Still not automated: member role changes and removal, ownership transfer, workspace creation, domain auto-join, PWA recovery, Notion sub-page paste, Google login.
