@@ -54,5 +54,5 @@ Last TC: TC0103 (103 tests total)
 - `tests/regression/editor-native.spec.js`: TC0085-TC0086 (native keyboard copy/paste and async Clipboard API; skipped when the OS clipboard is unusable)
 - `tests/regression/editor-mobile.spec.js`: TC0087-TC0088 (emulated phone)
 - `tests/regression/editor-comments.spec.js`: TC0089-TC0103 (block comments; cases and priorities in [docs/test-cases-comments.md](docs/test-cases-comments.md), only High and Medium automated)
-- Known-defect tests (kept failing on purpose, annotated `defect`): TC0033 DEF-01, TC0039 DEF-02, TC0047 DEF-03, TC0067 DEF-04 (passes since the floating-menu redesign, confirm whether the app fixed it), TC0088 DEF-07. Report: [docs/editor-clipboard-report.md](docs/editor-clipboard-report.md)
+- Known-defect tests (kept failing on purpose, annotated `defect`): TC0033 DEF-01, TC0039 DEF-02, TC0047 DEF-03, TC0067 DEF-04 (passes since the floating-menu redesign, confirm whether the app fixed it), TC0088 DEF-07 (test.fail(): remove it once the app is fixed). Report: [docs/editor-clipboard-report.md](docs/editor-clipboard-report.md)
 - Editor page object: `pages/EditorPage.js` (extends `DocPage`); comments: `pages/CommentsPage.js`; fixtures in `data/clipboard/` (regenerate with `node data/clipboard/build-fixtures.mjs`), loaders in `utils/clipboard.js`

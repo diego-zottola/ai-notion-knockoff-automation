@@ -1,16 +1,14 @@
 import { test, expect } from '../../fixtures/base.fixture.js';
 
 test.describe('Pages', () => {
-  test('TC0012 - block text typed with # shortcut becomes a heading block and persists', async ({ page, createdPage, docPage }) => {
-    const heading = page.getByRole('textbox', { name: 'Título 1' });
-    await docPage.addBlock.click();
-    // Blocks autosave with a debounce: wait for the write request instead of sleeping.
-    const saved = page.waitForResponse((r) => r.request().method() === 'PATCH' && r.url().includes('/rest/v1/blocks') && r.ok());
-    await docPage.firstBlock.fill('# Hola QA');
-    await expect(heading).toContainText('Hola QA');
-    await saved;
-    await page.reload();
-    await expect(heading).toContainText('Hola QA');
+  test('TC0012 - block text typed with # shortcut becomes a heading block and persists', async ({ page, createdPage, editor }) => {
+    const heading = () => editor.structure().then((blocks) => blocks.find((b) => b.type === 'heading'));
+    await editor.start();
+    await page.keyboard.type('# Hola QA');
+    await expect.poll(heading).toMatchObject({ level: 1, text: 'Hola QA' });
+    await editor.expectSaved();
+    await editor.reloadAndWait();
+    await expect.poll(heading).toMatchObject({ level: 1, text: 'Hola QA' });
   });
 
   test('TC0013 - a page can be found through search by its title', async ({ createdPage, workspace }) => {

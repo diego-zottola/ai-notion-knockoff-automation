@@ -44,6 +44,8 @@ test.describe('Editor on a phone', () => {
 
   // Known defect DEF-07.
   test('TC0088 - block selection and editor controls are reachable by touch', async ({ phonePage, editor, page }, testInfo) => {
+    // Expected to fail until DEF-07 is fixed: Playwright then reports it as passed, and as failed once the app is fixed (remove test.fail()).
+    test.fail();
     testInfo.annotations.push({ type: 'defect', description: 'DEF-07: on a phone the floating menu stays over the block-selection panel and covers "Terminar selección", even after the text selection collapses' });
     await editor.start({ saved: ['Touch one QA', 'Touch two QA', 'Touch three QA'], focus: false });
     await editor.openSelectionMode('Touch three QA', 'tap');
