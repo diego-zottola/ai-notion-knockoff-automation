@@ -112,5 +112,5 @@ The QA viewer account (`VIEWER_USER_*`) is a GUEST of the QA workspace; its role
 
 - A new page sometimes opens as "No encontramos esta página" until reloaded; `createPageFromSidebar` reloads once.
 - On a phone the floating menu covers "Terminar selección" in block-selection mode (DEF-07, TC0088).
-- The QA account accumulated about 630 leftover `qa-auto-` pages from earlier failed runs. Clean them with a database query, not the UI.
+- The QA account accumulated about 630 leftover `qa-auto-` pages (plus untitled ones) from earlier failed runs. Past 1000 pages the app hides the newest ones (DEF-08), so new pages open as "not found" and the suite fails. Clean them with a database query, not the UI.
 - Presence for a guest shows "también está acá" without a name.

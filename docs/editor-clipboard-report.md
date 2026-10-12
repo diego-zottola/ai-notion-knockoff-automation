@@ -34,6 +34,7 @@ Totals: 56 passed, 4 failed (known defects, kept failing on purpose), 1 skipped.
 - **DEF-05 (low, documented only)** The attachment "Descargar" link points at the inline URL until the signed "download" URL arrives; a cross-origin `<a download>` cannot force a download before that. TC0071-TC0072 wait for the signed URL.
 - **DEF-06 (WebKit only, not reproduced)** TC0080 passes on Chromium; this project runs Chromium only.
 - **DEF-07 (medium)** TC0088. Steps: on a phone viewport, select text, open "Más opciones" > "Seleccionar bloques", tick blocks, tap "Terminar selección". Expected: the button is reachable. Actual: the floating formatting menu stays over the selection-mode panel and covers "Terminar selección", even after the text selection collapses.
+- **DEF-08 (high, found while testing page organization)** The workspace page list is not paginated: `pagesService.listPages` selects all pages ordered by `position`, and `supabase/config.toml` has `max_rows = 1000`. Once a workspace holds more than 1000 pages (the QA account does, from leaked test pages), the newest ones are cut off: a page just created opens as "No encontramos esta página o no tenés acceso" even after reload, the move dialog omits it, and its title cannot be saved. Expected: pagination or an explicit limit that never hides pages. Not automated (needs more than 1000 pages); it is what made the suite flaky.
 
 ## Floating menu redesign (2026-10-12)
 

@@ -47,6 +47,8 @@ test.describe('Pages - organization', () => {
     const second = `${createdPage.title}-2`;
     await workspace.createSubpage(createdPage.title, first, docPage);
     await workspace.sidebarLink(createdPage.title).click();
+    // The click returns before the page switches: wait for the parent to be open so the next action targets it, not the child.
+    await expect(docPage.title).toHaveValue(createdPage.title);
     await workspace.createSubpage(createdPage.title, second, docPage);
     const order = async () => (await workspace.pageTree.getByRole('link', { name: new RegExp(`^${createdPage.title}-[12]$`) }).allInnerTexts());
     await expect.poll(order).toEqual([first, second]);
@@ -77,6 +79,8 @@ test.describe('Pages - organization', () => {
     const child = `${createdPage.title}-c`;
     await workspace.createSubpage(createdPage.title, child, docPage);
     await workspace.sidebarLink(createdPage.title).click();
+    // The click returns before the page switches: wait for the parent to be open so the next action targets it, not the child.
+    await expect(docPage.title).toHaveValue(createdPage.title);
     await docPage.archiveConfirmed();
     await expect(workspace.sidebarLink(child)).toHaveCount(0);
     await workspace.goTo('Papelera');
@@ -91,6 +95,8 @@ test.describe('Pages - organization', () => {
     const child = `${createdPage.title}-c`;
     await workspace.createSubpage(createdPage.title, child, docPage);
     await workspace.sidebarLink(createdPage.title).click();
+    // The click returns before the page switches: wait for the parent to be open so the next action targets it, not the child.
+    await expect(docPage.title).toHaveValue(createdPage.title);
     await docPage.archiveConfirmed();
     await workspace.goTo('Papelera');
     await trashPage.deleteForever(createdPage.title);
