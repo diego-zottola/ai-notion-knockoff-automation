@@ -9,6 +9,7 @@ import { FIVE_MB, clipboardOf, fixtureBytes, fixtureText, pngPayload } from '../
 // The app renames pasted images itself, so image blocks are matched by their .png name.
 const IMAGE_ORDER = ['Text before the image QA', expect.stringMatching(/\.png$/), 'Text between images QA', expect.stringMatching(/\.png$/), 'Text after the images QA'];
 const uploadFailure = (editor) => editor.surface.getByRole('alert').filter({ hasText: 'No se pudo subir la imagen' });
+const ANCHOR = 'Anchor text QA';
 const uploading = (editor) => editor.surface.getByRole('status').filter({ hasText: 'Subiendo imagen' });
 
 test.describe('Editor images - pasted from the clipboard', () => {
@@ -98,14 +99,15 @@ test.describe('Editor images - upload failures, undo and limits', () => {
   });
 
   test('TC0065 - an image deleted and restored with undo is recovered, saved, and still there after reload', async ({ createdPage, editor }) => {
-    await editor.start();
+    await editor.start({ saved: [ANCHOR] });
+    await editor.caret(ANCHOR, 'end');
     await editor.pasteSynthetic({ files: [pngPayload('blue', 'restore.png')] });
     const image = editor.surface.getByRole('img');
     await expect(image).toBeVisible({ timeout: 20_000 });
     await editor.expectSaved();
-    await editor.deleteViaSelection(/\.png/);
+    await editor.deleteViaSelection(ANCHOR, /\.png/);
     await expect(image).toHaveCount(0);
-    await editor.undo.click();
+    await editor.undoLast();
     await expect(image).toBeVisible();
     await editor.expectSaved();
     await editor.reloadAndWait();
@@ -119,12 +121,13 @@ test.describe('Editor images - upload failures, undo and limits', () => {
       if (route.request().method() === 'POST') await gate;
       await route.continue();
     });
-    await editor.start();
+    await editor.start({ saved: [ANCHOR] });
+    await editor.caret(ANCHOR, 'end');
     await editor.pasteSynthetic({ files: [pngPayload('red', 'quick.png')] });
     await expect(uploading(editor)).toBeVisible();
-    await editor.deleteViaSelection(/Bloque vacío/);
+    await editor.deleteViaSelection(ANCHOR, /^2\. Bloque vacío/);
     await expect(uploading(editor)).toHaveCount(0);
-    await editor.undo.click();
+    await editor.undoLast();
     await expect(uploading(editor)).toBeVisible();
     release();
     await expect(editor.surface.getByRole('img')).toBeVisible({ timeout: 20_000 });
@@ -142,15 +145,16 @@ test.describe('Editor images - upload failures, undo and limits', () => {
       if (route.request().method() === 'POST') await gate;
       await route.continue();
     });
-    await editor.start();
+    await editor.start({ saved: [ANCHOR] });
+    await editor.caret(ANCHOR, 'end');
     await editor.pasteSynthetic({ files: [pngPayload('green', 'late.png')] });
     await expect(uploading(editor)).toBeVisible();
-    await editor.deleteViaSelection(/Bloque vacío/);
+    await editor.deleteViaSelection(ANCHOR, /^2\. Bloque vacío/);
     const uploaded = page.waitForResponse((r) => r.url().includes('/storage/v1/object/') && r.request().method() === 'POST');
     release();
     await uploaded;
     await editor.expectSaved();
-    await editor.undo.click();
+    await editor.undoLast();
     // Acceptable outcomes: the image, or an error the person can recover from with "Reintentar".
     const image = editor.surface.getByRole('img');
     const failed = uploadFailure(editor);
@@ -180,12 +184,11 @@ test.describe('Editor images - upload failures, undo and limits', () => {
 });
 
 test.describe('Editor attachments', () => {
-  test('TC0070 - opening the file picker does not unmount the toolbar or the input (emulating the dialog blur)', async ({ createdPage, editor, page }) => {
-    await editor.start({ focus: false });
-    const chooser = await editor.openAttachmentChooser();
+  test('TC0070 - opening the file picker does not unmount the attachment input of the floating menu (emulating the dialog blur)', async ({ createdPage, editor, page }) => {
+    await editor.start({ saved: [ANCHOR], focus: false });
+    const chooser = await editor.openAttachmentChooserFromToolbar(ANCHOR);
     // A native dialog blurs the page with no related target. The OS dialog itself cannot be driven by Playwright.
     await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
-    await expect(editor.toolbar).toBeVisible();
     await expect(editor.attachmentInput).toBeAttached();
     await chooser.setFiles({ name: 'reporte-qa.txt', mimeType: 'text/plain', buffer: fixtureBytes('attachments/reporte-qa.txt') });
     await expect(editor.attachmentRow('reporte-qa.txt')).toBeVisible({ timeout: 20_000 });

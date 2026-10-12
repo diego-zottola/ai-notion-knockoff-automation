@@ -280,10 +280,11 @@ test.describe('Editor - editing and toolbar', () => {
     expect(styles.links).toHaveLength(1);
   });
 
-  test('TC0055 - the toolbar shows while editing and hides on interaction outside the editor', async ({ createdPage, editor }) => {
+  test('TC0055 - the floating menu shows over a text selection (not on a plain caret) and hides on interaction outside the editor', async ({ createdPage, editor }) => {
     await editor.start({ saved: ['Toolbar QA'] });
     await editor.block('Toolbar QA').click();
-    await expect(editor.toolbar).toBeVisible();
+    await expect(editor.toolbar).toHaveCount(0);
+    await editor.selectBlockText('Toolbar QA');
     await editor.clickOutsideEditor();
     await expect(editor.toolbar).toHaveCount(0);
   });
@@ -315,9 +316,9 @@ test.describe('Editor - undo and redo', () => {
     await editor.pasteSynthetic(clipboardOf('rich-page'));
     const pasted = await editor.visibleTexts();
     expect(pasted.length).toBeGreaterThan(10);
-    await editor.undo.click();
+    await editor.undoLast();
     await expect.poll(() => editor.visibleTexts()).toEqual(['Base QA']);
-    await editor.redo.click();
+    await editor.redoLast();
     await expect.poll(() => editor.visibleTexts()).toEqual(pasted);
   });
 });

@@ -20,9 +20,6 @@ export class EditorPage extends DocPage {
     this.diagram = this.surface.locator('[data-content-type="wsDiagram"]');
     this.linkInput = page.getByLabel('Dirección del enlace');
     this.imageInput = page.getByLabel('Agregar imagen', { exact: true });
-    this.selectionMode = page.getByRole('button', { name: 'Seleccionar bloques', exact: true });
-    this.undo = page.getByRole('button', { name: 'Deshacer', exact: true }).first();
-    this.redo = page.getByRole('button', { name: 'Rehacer', exact: true }).first();
     this.pageIcon = page.getByLabel('Cambiar ícono de página');
   }
 
@@ -175,7 +172,33 @@ export class EditorPage extends DocPage {
     }));
   }
 
-  async format(name) { await this.button(name).click(); }
+  /**
+   * The floating menu only shows over a text selection. Block type, colour and "Más opciones" actions live in dropdowns
+   * (menu trigger -> menu item); bold, italic, strike, link and comment are direct buttons.
+   */
+  menuOf(name) {
+    if (/^Título \d$|^Viñetas$|^Numeración$/.test(name)) return 'Tipo de bloque';
+    if (/^Color /.test(name)) return 'Color';
+    if (/^(Insertar tabla|Imagen|Adjuntar archivo|Deshacer|Rehacer|Seleccionar bloques)$/.test(name)) return 'Más opciones';
+    return null;
+  }
+
+  async format(name, pointer = 'click') {
+    const menu = this.menuOf(name);
+    if (!menu) return this.button(name)[pointer]();
+    await this.button(menu)[pointer]();
+    await this.toolbar.getByRole('menuitem', { name, exact: true })[pointer]();
+  }
+
+  /** Selects the whole text of the block containing `text`, so the floating menu appears. */
+  async selectBlockText(text) {
+    await this.selectRange(text, 0, text.length);
+    await expect(this.toolbar).toBeVisible();
+  }
+
+  /** Real keyboard undo/redo on the editor (the menu entries need a text selection, which a pasted image does not leave). */
+  async undoLast() { await this.surface.focus(); await this.page.keyboard.press(`${MOD}+z`); }
+  async redoLast() { await this.surface.focus(); await this.page.keyboard.press(`${MOD}+Shift+z`); }
 
   async applyLink(url) {
     await this.button('Enlace').click();
@@ -189,6 +212,14 @@ export class EditorPage extends DocPage {
     return this.surface.locator('table').evaluate((t) => ({ rows: t.querySelectorAll('tr').length, cols: t.querySelector('tr').children.length }));
   }
 
+  /** Opens the attachment picker from the floating menu ("Más opciones" > "Adjuntar archivo") over the text `anchor`. */
+  async openAttachmentChooserFromToolbar(anchor) {
+    await this.selectBlockText(anchor);
+    const chooser = this.page.waitForEvent('filechooser');
+    await this.format('Adjuntar archivo');
+    return chooser;
+  }
+
   /** Opens the real attachment control and returns the intercepted file chooser (the OS dialog itself is not drivable). */
   async openAttachmentChooser() {
     await this.surface.click();
@@ -199,9 +230,15 @@ export class EditorPage extends DocPage {
   get attachmentInput() { return this.page.getByLabel('Adjuntar archivo', { exact: true }); }
   attachmentRow(name) { return this.surface.locator('[data-content-type="wsFile"]').filter({ hasText: name }); }
 
-  /** Block selection mode, tick the blocks whose label matches, delete them (one undoable action). */
-  async deleteViaSelection(...labels) {
-    await this.selectionMode.click();
+  /** Block selection mode (floating menu > "Más opciones" > "Seleccionar bloques" over the text `anchor`). */
+  async openSelectionMode(anchor, pointer = 'click') {
+    await this.selectBlockText(anchor);
+    await this.format('Seleccionar bloques', pointer);
+  }
+
+  /** Enters block selection mode through `anchor`, ticks the blocks whose label matches, deletes them (one undoable action). */
+  async deleteViaSelection(anchor, ...labels) {
+    await this.openSelectionMode(anchor);
     for (const label of labels) await this.page.getByRole('checkbox', { name: label }).check();
     await this.page.getByRole('button', { name: `Eliminar ${labels.length} bloques`, exact: true }).click();
   }

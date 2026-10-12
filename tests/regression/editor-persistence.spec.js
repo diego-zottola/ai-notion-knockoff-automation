@@ -41,6 +41,8 @@ test.describe('Editor persistence', () => {
     const firstUrl = page.url();
     await workspace.sidebarNewPage.click();
     await page.waitForURL((url) => url.href !== firstUrl);
+    // The URL changes before the new page renders: wait for its empty title so the rename does not hit the first page.
+    await expect(editor.title).toHaveValue('');
     await editor.waitForEditor();
     await editor.setTitle(`${createdPage.title}-b`);
     await page.goto(firstUrl);
